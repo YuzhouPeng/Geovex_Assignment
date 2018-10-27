@@ -1,2 +1,2 @@
-# Geovex_Assignment
-Assignment for Geovex
+# Geovox_Assignment
+Assignment for Geovox
