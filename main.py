@@ -13,11 +13,23 @@ def CountAttributes(filename):
     return counters
 
 def ReadYears(filename):
+    buildingid_list = []
+    year_list = []
     with open(filename,'r') as f:
         reader = csv.reader(f)
+        next(f)
         for row in reader:
-            if row[7]!= None:
-                regex_year = re.compile('[0-9]{2}[-|\/]{1}[0-9]{2}[-|\/]{1}[0-9]{4}')
+            buildingid_list.append(row[0])
+            regex_date = re.compile('[0-9]{4}')
+            if regex_date.findall(row[7]) == []:
+                year_list.append(0)
+            else:
+                year = regex_date.findall(row[7])
+                year_list.append(int(year[0]))
+
+
+    df = pd.DataFrame({'BUILDING_ID':buildingid_list,'buildyear':year_list})
+    df.to_csv(globalparameter.GlobalFilePath+'/buildyear.csv',index=False)
 
 if __name__ == '__main__':
 
@@ -29,6 +41,7 @@ if __name__ == '__main__':
     # print(1)
 
     datafile = globalparameter.GlobalFilePath+'/output.csv'
+    ReadYears(globalparameter.GlobalFilePath+'/'+globalparameter.CSVFileNames[0])
     counterattributess =  CountAttributes(datafile)
     iterator=0
     build_unit_id_list = []
@@ -45,7 +58,11 @@ if __name__ == '__main__':
                 build_unit_num_list.append(value1)
         # print('{}: {}'.format(attr, dict(counts)))
     df = pd.DataFrame({build_attr_name:build_unit_id_list, 'unit_num':build_unit_num_list})
-    df.to_csv(globalparameter.GlobalFilePath+'/unitnum.csv')
+    df.to_csv(globalparameter.GlobalFilePath+'/unitnum.csv',index=False)
 
     csv_buildings = pd.read_csv(globalparameter.GlobalFilePath + '/' + globalparameter.CSVFileNames[0])
-    merged_new_building =
+    csv_building_years = pd.read_csv(globalparameter.GlobalFilePath + '/buildyear.csv')
+    csv_unit_num = pd.read_csv(globalparameter.GlobalFilePath+'/unitnum.csv')
+    merged_1 = csv_buildings.merge(csv_building_years,on='BUILDING_ID')
+    merged_2 = csv_unit_num.merge(merged_1, on='BUILDING_ID')
+    merged_2.to_csv(globalparameter.GlobalFilePath+"/building_update.csv", index=False)
