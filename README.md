@@ -14,3 +14,7 @@ main.py: main function of the system
 2. Configure paths of globalparameter.py
 
 3. Running main.py
+
+# Results:
+
+The system will print results of assignment in the console.
