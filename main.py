@@ -157,11 +157,16 @@ def CalculatePopulation(filename,selected_columns):
     return totalpop
 
 def CalculateSmallArea():
-    # columns = list(range(15,30))+list(range(50,65))
-    columns = list(range(85,100))
+    # columns = list(range(21,30))+list(range(56,65))
+    columns = list(range(91,100))
     totalpopulation = CalculatePopulation(globalparameter.GlobalFilePath+'/SAPS2016_SA2017.csv',columns)
     print('population of people between 12-54 is {}'.format(totalpopulation))
+
+
+
 if __name__ == '__main__':
+
+    # Main function
 
     # Data preparation
     MergeFiles()
