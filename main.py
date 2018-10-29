@@ -3,6 +3,18 @@ import csv,buildinginfo, re, geopy.distance
 import globalparameter
 from collections import Counter, OrderedDict
 
+
+def MergeFiles():
+    csv_buildings = pd.read_csv(globalparameter.GlobalFilePath + '/' + globalparameter.CSVFileNames[0])
+    csv_coords = pd.read_csv(globalparameter.GlobalFilePath + '/' + globalparameter.CSVFileNames[1])
+    csv_schools = pd.read_csv(globalparameter.GlobalFilePath + '/' + globalparameter.CSVFileNames[2])
+    csv_units = pd.read_csv(globalparameter.GlobalFilePath + '/' + globalparameter.CSVFileNames[3])
+
+    merged1 = csv_buildings.merge(csv_coords, on='BUILDING_ID')
+    merged2 = csv_units.merge(merged1, on='BUILDING_ID')
+    merged2.to_csv(globalparameter.GlobalFilePath + "/output.csv", index=False)
+
+
 def CountAttributes(filename):
     with open(filename,'r') as f:
         reader = csv.DictReader(f)
@@ -137,13 +149,22 @@ def FindSuitableBuilding(datafile):
 
 
 def CalculatePopulation(filename,selected_columns):
-    with open(filename) as f:
-        next(f)
-        for i in range(len(selected_columns)):
-            totalpop = sum(int(r[selected_columns[i]]) for r in csv.reader(f))
+    totalpop = 0
+    for i in range(len(selected_columns)):
+        with open(filename) as f:
+            next(f)
+            totalpop = totalpop+ sum(int(r[selected_columns[i]]) for r in csv.reader(f))
     return totalpop
 
+def CalculateSmallArea():
+    # columns = list(range(15,30))+list(range(50,65))
+    columns = list(range(85,100))
+    totalpopulation = CalculatePopulation(globalparameter.GlobalFilePath+'/SAPS2016_SA2017.csv',columns)
+    print('population of people between 12-54 is {}'.format(totalpopulation))
 if __name__ == '__main__':
+
+    # Data preparation
+    MergeFiles()
 
     # Statistic of buildings.csv
 
@@ -151,6 +172,7 @@ if __name__ == '__main__':
     # for attr,counts in CountAttributes(testdatafile).items():
     #     print('{}: {}'.format(attr, dict(counts)))
     # print(1)
+
 
     # Assignment 1
 
@@ -163,7 +185,7 @@ if __name__ == '__main__':
     # Calculate distance between
     FindSchoolDistance(buildingid)
     # Bonus question
-
+    CalculateSmallArea()
 
     # Assignment 2
 
