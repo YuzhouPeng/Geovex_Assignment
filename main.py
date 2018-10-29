@@ -12,6 +12,14 @@ def CountAttributes(filename):
                 counters[attr][value] += 1
     return counters
 
+def flatten(nestlist):
+    for i in nestlist:
+        if isinstance(i, (list,tuple)):
+            for j in flatten(i):
+                yield j
+        else:
+            yield i
+
 def ReadYears(filename):
     buildingid_list = []
     year_list = []
@@ -38,22 +46,57 @@ def CalculateDistance(latitude1, longitude1, latitude2, longitude2):
     # print(distance)
     return distance
 
-def FindSuitableBuilding():
-    return
+def FindSchoolDistance(buildingid):
+    # Find latitude and longitude of building
+    building_latitude = 0
+    building_longitude = 0
+    with open(globalparameter.GlobalFilePath+'/'+globalparameter.CSVFileNames[1],'r') as f:
+        reader = csv.reader(f)
+        next(f)
+        for row in reader:
+            if buildingid==int(row[0]):
+                building_latitude = float(row[1])
+                building_longitude = float(row[2])
+    # Calculate school distance
+    school_id = []
+    school_latitude = []
+    school_longitude = []
+    school_type = []
+    with open(globalparameter.GlobalFilePath+'/'+globalparameter.CSVFileNames[2],'r') as f:
+        reader = csv.reader(f)
+        next(f)
+        for row in reader:
+            school_id.append(int(row[0]))
+            school_latitude.append(float(row[1]))
+            school_longitude.append(float(row[2]))
+            if row[3] =='POST-PRIMARY':
+                school_type.append(1)
+            elif row[3] == 'PRIMARY':
+                school_type.append(2)
+            else:
+                school_type.append(-1)
+    mindistance = 9999
+    mindistance_schoolid = 0
+    postprimary_number = 0
+    for i in range(267):
+        school_building_distance = CalculateDistance(building_latitude,building_longitude,school_latitude[i],school_longitude[i])
+        if school_building_distance<mindistance:
+            mindistance = school_building_distance
+            # print(mindistance)
+            mindistance_schoolid = school_id[i]
+        # if school_type[i]==1:
+        #     print('post-primary distance: {}'.format(school_building_distance))
+        if school_building_distance<3 and school_type[i]==1:
+            postprimary_number = postprimary_number+1
 
-if __name__ == '__main__':
 
-    # Statistic of buildings.csv
 
-    # testdatafile = globalparameter.GlobalFilePath+'/'+globalparameter.CSVFileNames[0]
-    # for attr,counts in CountAttributes(testdatafile).items():
-    #     print('{}: {}'.format(attr, dict(counts)))
-    # print(1)
+    print('building id of shortest distance of school and building is {} and the distance is: {}'.format(mindistance_schoolid,mindistance))
+    print('number of post-primary school within 3 km is {}'.format(postprimary_number))
 
-    # Find suitable buildings
 
-    datafile = globalparameter.GlobalFilePath+'/output.csv'
-    ReadYears(globalparameter.GlobalFilePath+'/'+globalparameter.CSVFileNames[0])
+def FindSuitableBuilding(datafile):
+
     counterattributess =  CountAttributes(datafile)
     iterator=0
     build_unit_id_list = []
@@ -90,42 +133,41 @@ if __name__ == '__main__':
                 max_unit_num_id = row[0]
 
         print('id of the building id is: {}'.format(max_unit_num_id))
+    return int(max_unit_num_id)
 
-    # id:1401193775 coord: LAT:53.342715 LON:-6.236459
 
-    # Calculate distance
-    school_id = []
-    school_latitude = []
-    school_longitude = []
-    school_type = []
-    with open(globalparameter.GlobalFilePath+'/'+globalparameter.CSVFileNames[2],'r') as f:
-        reader = csv.reader(f)
+def CalculatePopulation(filename,selected_columns):
+    with open(filename) as f:
         next(f)
-        for row in reader:
-            school_id.append(int(row[0]))
-            school_latitude.append(float(row[1]))
-            school_longitude.append(float(row[2]))
-            if row[3] =='POST-PRIMARY':
-                school_type.append(1)
-            elif row[3] == 'PRIMARY':
-                school_type.append(2)
-            else:
-                school_type.append(-1)
-    mindistance = 9999
-    mindistance_schoolid = 0
-    postprimary_number = 0
-    for i in range(267):
-        school_building_distance = CalculateDistance(53.342715,-6.236459,school_latitude[i],school_longitude[i])
-        if school_building_distance<mindistance:
-            mindistance = school_building_distance
-            # print(mindistance)
-            mindistance_schoolid = school_id[i]
-        # if school_type[i]==1:
-        #     print('post-primary distance: {}'.format(school_building_distance))
-        if school_building_distance<3 and school_type[i]==1:
-            postprimary_number = postprimary_number+1
+        for i in range(len(selected_columns)):
+            totalpop = sum(int(r[selected_columns[i]]) for r in csv.reader(f))
+    return totalpop
+
+if __name__ == '__main__':
+
+    # Statistic of buildings.csv
+
+    # testdatafile = globalparameter.GlobalFilePath+'/'+globalparameter.CSVFileNames[0]
+    # for attr,counts in CountAttributes(testdatafile).items():
+    #     print('{}: {}'.format(attr, dict(counts)))
+    # print(1)
+
+    # Assignment 1
+
+    datafile = globalparameter.GlobalFilePath+'/output.csv'
+    # Convert date using regular expression
+    ReadYears(globalparameter.GlobalFilePath+'/'+globalparameter.CSVFileNames[0])
+    # Find the building that meet requirements
+    buildingid = FindSuitableBuilding(datafile)
+    # id:1401193775 coord: LAT:53.342715 LON:-6.236459
+    # Calculate distance between
+    FindSchoolDistance(buildingid)
+    # Bonus question
 
 
+    # Assignment 2
 
-    print('building id of shortest distance of school and building is {} and the distance is: {}'.format(mindistance_schoolid,mindistance))
-    print('number of post-primary school within 3 km is {}'.format(postprimary_number))
+    test = [[1, 2, [3]], 4]
+    print(list(flatten(test)))
+
+
