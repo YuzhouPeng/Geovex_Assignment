@@ -1,4 +1,4 @@
-# Geovox_Assignment
+# Geowox_Assignment
 Assignment for Geovox
 
 # Description of python file:
