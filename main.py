@@ -1,5 +1,5 @@
 import pandas as pd
-import csv,buildinginfo, re, geopy.distance
+import csv, re, geopy.distance
 import globalparameter
 from collections import Counter, OrderedDict
 
@@ -162,6 +162,16 @@ def CalculateSmallArea():
     totalpopulation = CalculatePopulation(globalparameter.GlobalFilePath+'/SAPS2016_SA2017.csv',columns)
     print('population of people between 12-54 is {}'.format(totalpopulation))
 
+def readyears(filename,yearstart,yearend):
+    validvalue = 0
+    with open(globalparameter.GlobalFilePath+'/building_update.csv','r') as f:
+        reader = csv.reader(f)
+        next(f)
+        for row in reader:
+            if row[11]:
+                if int(row[11])>=yearstart and int(row[11])<yearend:
+                    validvalue= validvalue+1
+    return validvalue
 
 
 if __name__ == '__main__':
@@ -173,24 +183,30 @@ if __name__ == '__main__':
 
     # Statistic of buildings.csv
 
-    # testdatafile = globalparameter.GlobalFilePath+'/'+globalparameter.CSVFileNames[0]
-    # for attr,counts in CountAttributes(testdatafile).items():
-    #     print('{}: {}'.format(attr, dict(counts)))
-    # print(1)
+    testdatafile = globalparameter.GlobalFilePath+'/'+globalparameter.CSVFileNames[4]
+    for attr,counts in CountAttributes(testdatafile).items():
+        print('{}: {}'.format(attr, dict(counts)))
+    print(1)
 
+    num_of_year = []
 
+    for i in range(1800,2020,20):
+        print(i)
+        years = readyears(globalparameter.GlobalFilePath+'/'+globalparameter.CSVFileNames[4],i,i+20)
+        num_of_year.append(years)
+    print('year: {}'.format(num_of_year))
     # Assignment 1
 
-    datafile = globalparameter.GlobalFilePath+'/output.csv'
-    # Convert date using regular expression
-    ReadYears(globalparameter.GlobalFilePath+'/'+globalparameter.CSVFileNames[0])
-    # Find the building that meet requirements
-    buildingid = FindSuitableBuilding(datafile)
-    # id:1401193775 coord: LAT:53.342715 LON:-6.236459
-    # Calculate distance between
-    FindSchoolDistance(buildingid)
-    # Bonus question
-    CalculateSmallArea()
+    # datafile = globalparameter.GlobalFilePath+'/output.csv'
+    # # Convert date using regular expression
+    # ReadYears(globalparameter.GlobalFilePath+'/'+globalparameter.CSVFileNames[0])
+    # # Find the building that meet requirements
+    # buildingid = FindSuitableBuilding(datafile)
+    # # id:1401193775 coord: LAT:53.342715 LON:-6.236459
+    # # Calculate distance between
+    # FindSchoolDistance(buildingid)
+    # # Bonus question
+    # CalculateSmallArea()
 
     # Assignment 2
 
