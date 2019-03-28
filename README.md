@@ -1,7 +1,7 @@
-# Geowox_Assignment
+# Kaggle contest
 Assignment for Geovox
 
-# Description of python file:
+# Trying different algorithms:
 globalparameter.py: file containing global folder path and filename. You can change path of your file.
 
 
