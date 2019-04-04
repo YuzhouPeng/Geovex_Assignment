@@ -1,18 +1,23 @@
 # Kaggle contest
-#Toxic Comment Classification
+# Toxic comments detection
+currently working
+# Titanic 
+Finished
+
+# Toxic Comment Classification
 A multi channel CNN + GRU model for toxic comment classification. Blended outputs from this model and several other models. Currently in top 12% in Kaggle's Toxic Comment Classification Challenge.Leaderboard
 
-#Getting Started
+# Getting Started
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-#Prerequisites
+# Prerequisites
 Python (used 3.5.2)
 Pandas
 NLTK
 Keras with Tensorflow as back end
 Numpy
 Datasets One can download the datasets from Kaggle
-#Installation
+# Installation
 Clone Multichannel.py to your local system.
 Download the datasets.
 Update the path of training, testing and submission files.
