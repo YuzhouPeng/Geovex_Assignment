@@ -18,7 +18,7 @@ Keras with Tensorflow as back end
 Numpy
 Datasets One can download the datasets from Kaggle
 # Installation
-Clone Multichannel.py to your local system.
+Clone readcsv.py to your local system.
 Download the datasets.
 Update the path of training, testing and submission files.
 Run the script. Training will take a considerable amount of time.
